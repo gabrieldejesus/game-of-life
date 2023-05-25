@@ -1,13 +1,4 @@
-import {
-  WebGLRenderer,
-  Scene,
-  AxesHelper,
-  sRGBEncoding,
-  PCFShadowMap,
-  ACESFilmicToneMapping,
-  Color,
-} from 'three'
-import { gui } from './gui'
+import { WebGLRenderer, Scene } from 'three'
 
 export const sizes = {
   width: window.innerWidth,
@@ -16,7 +7,9 @@ export const sizes = {
 
 // Scene
 export const scene = new Scene()
-scene.background = new Color('#333')
+
+// Create a second scene that will be rendered to the off-screen buffer
+export const bufferScene = new Scene();
 
 const canvas: HTMLElement = document.querySelector('#webgl') as HTMLElement
 
@@ -27,23 +20,7 @@ export const renderer = new WebGLRenderer({
   alpha: true,
 })
 
-// More realistic shadows
-renderer.shadowMap.enabled = true
-renderer.shadowMap.type = PCFShadowMap
-renderer.physicallyCorrectLights = true
-renderer.outputEncoding = sRGBEncoding
-renderer.toneMapping = ACESFilmicToneMapping
-renderer.toneMappingExposure = 1
-
-// Axes Helper
-const axesHelper = new AxesHelper()
-scene.add(axesHelper)
-
-gui.addInput(axesHelper, 'visible', {
-  label: 'AxesHelper',
-})
-
-function updateRenderer() {
+const updateRenderer = () => {
   renderer.setSize(sizes.width, sizes.height)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // To avoid performance problems on devices with higher pixel ratio
 }
@@ -56,7 +33,4 @@ window.addEventListener('resize', () => {
 
 updateRenderer()
 
-export default {
-  renderer,
-  gui,
-}
+export default { renderer }
